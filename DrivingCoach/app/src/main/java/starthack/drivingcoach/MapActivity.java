@@ -158,8 +158,7 @@ public class MapActivity extends AppCompatActivity {
         double average_speed = positioningManager.getAverageSpeed();
         RoadElement road = positioningManager.getRoadElement();
         if(road != null){
-            float speedLimit = road.getSpeedLimit();
-            Toast.makeText(this, String.valueOf(speedLimit), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, road.getRoadName() + " " + road.getSpeedLimit(), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Not on a Road", Toast.LENGTH_SHORT).show();
         }
