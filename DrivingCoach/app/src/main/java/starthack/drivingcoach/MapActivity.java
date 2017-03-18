@@ -114,7 +114,7 @@ public class MapActivity extends AppCompatActivity {
 
         //Initialize the data collection handler§
         final Handler dataHandler = new Handler();
-        final int dataHandlerDelay = 10000; //milliseconds
+        final int dataHandlerDelay = DataAnalysis.TIMELAPSE; //milliseconds
 
         dataHandler.postDelayed(new Runnable(){
             public void run(){
@@ -154,9 +154,8 @@ public class MapActivity extends AppCompatActivity {
                     map.getPositionIndicator().setVisible(true);
 
 
-                    // Set the map center to the Vancouver region (no animation)
-                    map.setCenter(new GeoCoordinate(46, 105),
-                            Map.Animation.NONE);
+//                    map.setCenter(new GeoCoordinate(46, 9.8, 0.0),
+//                            Map.Animation.NONE);
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel(
                             (map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
@@ -168,10 +167,9 @@ public class MapActivity extends AppCompatActivity {
     }
 
     public void refreshPosition(View view) {
-        // Set the map center to the Vancouver region (no animation)
         GeoCoordinate pos = positioningManager.getPosition().getCoordinate();
         map.setCenter(pos, Map.Animation.NONE);
-        Log.d("<<<<<", pos.toString());
+//        Log.d("<<<<<", pos.toString());
     }
 
     @Override
