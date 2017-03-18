@@ -19,6 +19,7 @@ public class DataAnalysis {
     // To keep track of the passing time ~
     private static int passedTime = 0;                      // in ms
     private static double totalSpeedNegativeScore = 0;      // We start at 0
+    private static double totalDistance = 0;
 
     private static final double penalty = 1.0;
     private static List<Double> negativeSpeedDiff = new ArrayList<>();

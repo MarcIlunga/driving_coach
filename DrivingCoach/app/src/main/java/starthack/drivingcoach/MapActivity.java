@@ -145,7 +145,7 @@ public class MapActivity extends AppCompatActivity {
                     positioningManager = PositioningManager.getInstance();
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
 
-                    positioningManager.addListener(new WeakReference<PositioningManager.OnPositionChangedListener>(positionChangedListener));
+                    positioningManager.addListener(new WeakReference<>(positionChangedListener));
 
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
