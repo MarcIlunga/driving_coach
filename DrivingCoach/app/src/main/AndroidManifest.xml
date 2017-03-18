@@ -44,6 +44,7 @@
         <meta-data
             android:name="com.here.android.maps.apptoken"
             android:value="5jijFu_y_OJZMWWPs9slJA" />
+        <meta-data android:name="com.here.android.maps.license.key" android:value="famsBDO9xXBo+Km8mjcOOp03GHkueJajm2+ln9tpGLVYjHO0G8FQclRg1DMeJOqRynoaAcmD6Ut8nL1kzBKYQ3g+tNR1gTSjgpjwS+EzS8f2bLN3aQzvx/iQ/tfDPj5mOAXwCrKZ5Z/Qm0oF4mwiwGOyXvafmPEFGeqUUMaL4ZZQ0Z8r7KGyg0NoxaJnKu/eJD+VPzQz6ecnG0MDX7H2jkcoBCoR0tUs/FLnf0aO3UBMPs9L/vEt4yKEmDRya70Q89Pd+Ner7T3Pg0gDba0S+wuoxEx+srOwZLfE8NMYOwaf4AED3tmudAlz1/3q724ytbHa97jvg9W260QKir5sJo7dyeypPurZEqjt+vUzT7zoj+iIIZt0Qbcv/ZYGmxz3PutX1GbbD31vDzibJ0H3rj0JFZbb7LRGixrViO1mKKwuwb6wwRm0H8Oz6Gx2H7PyCPxSUESseETm1Vzojzc/yKXpDpSYqpK6VdnL9DMBy1msm9Ayk9r6PqwdX1pFHpERGHXkHsmtw8egL492pZd17gYhb4CONgLRLie1JMFFcZINccmHNQhXy3cERt6VXWQ1ry/Kwenr7xA5EfzeGXV0A6CepcCjtHs3QnkURh4V9uvP6yyijgrO+Aya/n8NONViTb9NuIjL+nVYUcvzkl/TuL7ShRX2VlMK8loVUsHs5Pw="/>
 
         <activity android:name=".MapActivity"></activity>
     </application>
