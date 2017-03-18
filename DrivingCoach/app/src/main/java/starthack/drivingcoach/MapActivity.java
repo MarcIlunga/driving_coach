@@ -15,6 +15,7 @@ import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.common.PositioningManager;
+import com.here.android.mpa.common.RoadElement;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
 
@@ -152,6 +153,17 @@ public class MapActivity extends AppCompatActivity {
     public void refreshPosition(View view) {
         // Set the map center to the Vancouver region (no animation)
         GeoCoordinate pos = positioningManager.getPosition().getCoordinate();
+
+        // Test code for speed limit and such
+        double average_speed = positioningManager.getAverageSpeed();
+        RoadElement road = positioningManager.getRoadElement();
+        if(road != null){
+            float speedLimit = road.getSpeedLimit();
+            Toast.makeText(this, String.valueOf(speedLimit), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Not on a Road", Toast.LENGTH_SHORT).show();
+        }
+
         map.setCenter(pos,
                 Map.Animation.NONE);
         Log.d("<<<<<", pos.toString());
