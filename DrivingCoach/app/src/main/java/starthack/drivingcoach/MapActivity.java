@@ -167,9 +167,6 @@ public class MapActivity extends AppCompatActivity {
         map.setCenter(pos,
                 Map.Animation.NONE);
         Log.d("<<<<<", pos.toString());
-        // Set the zoom level to the average between min and max
-        map.setZoomLevel(
-                (map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
     }
 
     @Override
