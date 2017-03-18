@@ -27,6 +27,17 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name="com.here.android.mpa.service.MapService"
+            android:label="HereMapService"
+            android:process="global.Here.Map.Service.v2"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.here.android.mpa.service.MapService" >
+                </action>
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="com.here.android.maps.appid"
             android:value="HShRf9JVp2WPzkQR7iUz" />
