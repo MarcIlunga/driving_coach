@@ -1,6 +1,7 @@
 package starthack.drivingcoach;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import android.os.Handler;
 
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPosition;
@@ -109,6 +111,21 @@ public class MapActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermissions();
+
+        //Initialize the data collection handler§
+        final Handler dataHandler = new Handler();
+        final int dataHandlerDelay = 10000; //milliseconds
+
+        dataHandler.postDelayed(new Runnable(){
+            public void run(){
+                if(positioningManager != null){
+                    double averageSpeed = positioningManager.getAverageSpeed();
+                    RoadElement road = positioningManager.getRoadElement();
+                    DataAnalysis.analyse(averageSpeed, road);
+                }
+                dataHandler.postDelayed(this, dataHandlerDelay);
+            }
+        }, dataHandlerDelay);
     }
 
     private void initialize() {
@@ -153,18 +170,7 @@ public class MapActivity extends AppCompatActivity {
     public void refreshPosition(View view) {
         // Set the map center to the Vancouver region (no animation)
         GeoCoordinate pos = positioningManager.getPosition().getCoordinate();
-
-        // Test code for speed limit and such
-        double average_speed = positioningManager.getAverageSpeed();
-        RoadElement road = positioningManager.getRoadElement();
-        if(road != null){
-            Toast.makeText(this, road.getRoadName() + " " + road.getSpeedLimit(), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Not on a Road", Toast.LENGTH_SHORT).show();
-        }
-
-        map.setCenter(pos,
-                Map.Animation.NONE);
+        map.setCenter(pos, Map.Animation.NONE);
         Log.d("<<<<<", pos.toString());
     }
 
