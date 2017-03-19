@@ -207,6 +207,7 @@ public class MapActivity extends AppCompatActivity {
         FileWriterReader.writeFile("last.pos", pos.getLatitude() + "," + pos.getLongitude() + "," + pos.getAltitude(), MyApplication.getContext());
 //        String read = FileWriterReader.readFile("last.pos", MyApplication.getContext());
 //        Log.d("<<<<<<", "Readed :" + read);
+        DataEcoAnalysis.calculateEcoScore();
         DataAnalysis.writeToFile();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

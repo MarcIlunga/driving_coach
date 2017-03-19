@@ -44,7 +44,7 @@ public class DataEcoAnalysis {
     /*
      * For now it's an easy function
      */
-    public double calculateEcoScore () {
+    public static double calculateEcoScore () {
         double score = 0;
         for (Double[] d: res) {
             score += (d[0]*d[0]+d[1]*d[1]+d[2]+d[2]) / (3 * res.size()*res.size());

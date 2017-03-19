@@ -28,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import static android.view.View.GONE;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,6 +39,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (FileWriterReader.fileExist("login.data", MyApplication.getContext())) {
+            findViewById(R.id.MAIN_Login).setVisibility(GONE);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -57,8 +62,12 @@ public class MainActivity extends AppCompatActivity
         String distPrint = DataAnalysis.totalDistance + "m";
         ((TextView)findViewById(R.id.DAILY_distance)).setText(distPrint);
 
-        String ecolo = (FileWriterReader.readFile("ecolo.score", MyApplication.getContext()));
-        ((TextView)findViewById(R.id.DAILY_ecology)).setText(ecolo);
+        if (FileWriterReader.fileExist("ecolo.score", MyApplication.getContext())) {
+            String ecolo = (FileWriterReader.readFile("ecolo.score", MyApplication.getContext()));
+            ((TextView) findViewById(R.id.DAILY_ecology)).setText(ecolo);
+        } else {
+            ((TextView) findViewById(R.id.DAILY_ecology)).setText("No data");
+        }
     }
 
     void onFabClick (View view) {
@@ -142,7 +151,7 @@ public class MainActivity extends AppCompatActivity
             cardView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    cardView.setVisibility(View.GONE);
+                    cardView.setVisibility(GONE);
                 }
             }, 800);
 
@@ -168,7 +177,8 @@ public class MainActivity extends AppCompatActivity
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            String data = "Myid,"+pseudo+","+mail;
+            FileWriterReader.writeFile("login.data", data, MyApplication.getContext());
         } else {
             Log.d("<<<<<", "Data given is not valid !");
         }
