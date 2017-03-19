@@ -1,9 +1,14 @@
 package starthack.drivingcoach;
 
+
+import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Created by marius on 19.03.2017.
+ */
 public class DataEcoAnalysis {
 
     private static int nSamplesPos = 0;
@@ -17,7 +22,9 @@ public class DataEcoAnalysis {
 
     // We get the acceleration here
     public static void analyse(int x, int y, int z) {
-//        We only need the x if the sensor is well placed in car
+        Log.d("ECO: ","x: " + x + " y:" + y + " z:" + z);
+
+        //We only need the x if the sensor is well placed in car
         if (x >= 0) {
             // Acceleration forward or at the bac
         } else {
