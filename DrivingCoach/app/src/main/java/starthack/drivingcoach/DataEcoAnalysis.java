@@ -22,10 +22,9 @@ public class DataEcoAnalysis {
 
     // We get the acceleration here
     public static void analyse(int x, int y, int z) {
-<<<<<<< HEAD
         Log.d("ECO: ","x: " + x + " y:" + y + " z:" + z);
-=======
-//        We only need the x if the sensor is well placed in car
+
+        //We only need the x if the sensor is well placed in car
         if (x >= 0) {
             // Acceleration forward or at the bac
         } else {
