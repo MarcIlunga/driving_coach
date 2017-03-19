@@ -170,22 +170,26 @@ public class BleManager {
                         Log.d("<<<<<", "Sanity Check: " + sanityCheck);
                         if(sanityCheck){
 
-                            for (BluetoothGattDescriptor descriptor : XKD_CHARAC_R.getDescriptors()) {
-                                //find descriptor UUID that matches Client Characteristic Configuration (0x2902)
-                                // and then call setValue on that descriptor
+                            boolean error = !gatt.setCharacteristicNotification(XKD_CHARAC_R, true);
+                            if(error){
+                                Log.d("", "error setCharacteristicNotification");
+                                return;
+                            }
 
-                                descriptor.setValue( BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            BluetoothGattDescriptor descriptor =
+                                    XKD_CHARAC_R.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+
+                            if (descriptor == null) {
+                                Log.d("", "error getDescriptor");
+                                return;
+                            }
+
+                            boolean result = descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            if (result) {
                                 gatt.writeDescriptor(descriptor);
                             }
-                            gatt.setCharacteristicNotification(XKD_CHARAC_R, true);
 
-                            String s = "start";
-                            byte[] b = s.getBytes(StandardCharsets.US_ASCII);
-                            XKD_CHARAC_W.setValue(b);
-                            //XKD_CHARAC_R.setValue(b);
-
-                            gatt.writeCharacteristic(XKD_CHARAC_W);
-                            Log.d("<<<<<", "Sent");
+                            Log.d("<<<<<", "Descriptor Write Asked");
                         }
                     } else {
                        //Log.w(TAG, "onServicesDiscovered received: " + status);
@@ -193,13 +197,25 @@ public class BleManager {
                 }
 
                 @Override
-                // Result of a characteristic read operation
-                public void onCharacteristicRead(BluetoothGatt gatt,
-                                                 BluetoothGattCharacteristic characteristic,
-                                                 int status) {
-                    if (status == BluetoothGatt.GATT_SUCCESS) {
-                        broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+                public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+                    byte[] value = descriptor.getValue();
+                    boolean notification_write = value == BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE;
+                    Log.d("<<<<<", "onDescriptorWrite: " + notification_write);
+                    if(notification_write){
+                        String s = "start";
+                        //byte[] b = s.getBytes(StandardCharsets.US_ASCII);
+                        XKD_CHARAC_W.setValue(s.getBytes());
+                        gatt.writeCharacteristic(XKD_CHARAC_W);
+                        XKD_CHARAC_W.setWriteType(2);
+                        Log.d("<<<<<", "Start Sent");
                     }
+                }
+
+                @Override
+                // Result of a characteristic read operation
+                public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic,
+                                                 int status) {
+                    Log.d("<<<<<", "onCharacteristicRead: " + (characteristic == XKD_CHARAC_R));
                 }
 
                 @Override
@@ -216,7 +232,15 @@ public class BleManager {
                 public void onCharacteristicChanged(BluetoothGatt gatt,
                                                     BluetoothGattCharacteristic characteristic) {
 
-                    Log.d("","sa");
+                    Log.d("<<<<<","onCharacteristicChanged");
+                    byte[] value = characteristic.getValue();
+                    String message = new String(value).trim();
+                    //Log.d("<<<<<", message);
+                    String[] temp = message.split(" ");
+                    int x = Integer.parseInt(temp[0]);
+                    int y = Integer.parseInt(temp[1]);
+                    int z = Integer.parseInt(temp[2]);
+                    DataEcoAnalysis.analyse(x, y, z);
                 }
 
             };
