@@ -54,7 +54,7 @@ public class DataEcoAnalysis {
     public static double calculateEcoScore () {
         double score = 0;
         for (Double[] d: res) {
-            score += (d[0]*d[0]+d[1]*d[1]+d[2]+d[2]) / (3 * res.size()*res.size());
+            score += (d[0]*d[0]+d[1]*d[1]+d[2]+d[2]) / (res.size());
         }
 
         FileWriterReader.writeFile("ecolo.score", score + "", MyApplication.getContext());

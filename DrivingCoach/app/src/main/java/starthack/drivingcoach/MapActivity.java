@@ -33,6 +33,7 @@ public class MapActivity extends AppCompatActivity {
     private boolean paused = false;
     // map embedded in the map fragment
     private Map map = null;
+    private BleManager blmanager;
 
     // map fragment embedded in this activity
     private MapFragment mapFragment = null;
@@ -131,7 +132,7 @@ public class MapActivity extends AppCompatActivity {
             }
         }, dataHandlerDelay);
 
-        BleManager blmanager = new BleManager(this);
+        blmanager = new BleManager(this);
     }
 
     private void initialize() {
@@ -207,6 +208,7 @@ public class MapActivity extends AppCompatActivity {
         FileWriterReader.writeFile("last.pos", pos.getLatitude() + "," + pos.getLongitude() + "," + pos.getAltitude(), MyApplication.getContext());
 //        String read = FileWriterReader.readFile("last.pos", MyApplication.getContext());
 //        Log.d("<<<<<<", "Readed :" + read);
+        blmanager.close();
         DataEcoAnalysis.calculateEcoScore();
         DataAnalysis.writeToFile();
         Intent intent = new Intent(this, MainActivity.class);
