@@ -1,6 +1,10 @@
 package starthack.drivingcoach;
 
 import com.here.android.mpa.common.RoadElement;
+
+import android.app.*;
+import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -17,18 +21,24 @@ public class DataAnalysis {
     public static final double penalizedSlowLimit = 180.0;  // 50 km/h
 
     // To keep track of the passing time ~
-    private static int passedTime = 0;                      // in ms
-    private static double totalSpeedNegativeScore = 0;      // We start at 0
-    private static double totalDistance = 0;
+    public static int passedTime = 0;                      // in ms
+    public static double totalSpeedNegativeScore = 0;      // We start at 0
+    public static double totalDistance = 0;
+    public static double totalScore = 0;
 
     private static final double penalty = 1.0;
     private static List<Double> negativeSpeedDiff = new ArrayList<>();
 
+
+    public static void init () {
+        readFromFiles();
+    }
+
     public static void analyse(double averageSpeed, RoadElement road){
-        Log.d("<<<<<", "average speed: " + averageSpeed);
+//        Log.d("<<<<<", "average speed: " + averageSpeed);
         if(road != null){
-            Log.d("<<<<<", "road name: " + road.getRoadName());
-            Log.d("<<<<<", "road speed limit: " + road.getSpeedLimit());
+//            Log.d("<<<<<", "road name: " + road.getRoadName());
+//            Log.d("<<<<<", "road speed limit: " + road.getSpeedLimit());
             double diff = road.getSpeedLimit() - averageSpeed;
             // Too slow
             if (diff > penalizedSlowLimit) {
@@ -45,6 +55,7 @@ public class DataAnalysis {
             // Compute the negative score for now
             totalSpeedNegativeScore += computeSpeedScore();
             passedTime += TIMELAPSE;
+            totalDistance += averageSpeed * TIMELAPSE/1000.0;
         }
     }
 
@@ -106,5 +117,26 @@ public class DataAnalysis {
         }
 
         return sum/diffs.size();
+    }
+
+    public static void readFromFiles () {
+        if (FileWriterReader.fileExist("distance.tot", MyApplication.getContext())) {
+            totalDistance = Double.parseDouble(FileWriterReader.readFile("distance.tot", MyApplication.getContext()));
+        }
+
+        if (FileWriterReader.fileExist("negscore.tot", MyApplication.getContext())) {
+            totalSpeedNegativeScore = Double.parseDouble(FileWriterReader.readFile("negscore.tot", MyApplication.getContext()));
+        }
+
+        if (FileWriterReader.fileExist("speed.score", MyApplication.getContext())) {
+            totalScore = Double.parseDouble(FileWriterReader.readFile("speed.score", MyApplication.getContext()));
+        }
+    }
+
+    public static void writeToFile() {
+        totalScore = (totalSpeedNegativeScore / (totalDistance + 1));
+        FileWriterReader.writeFile("speed.score", "" + totalScore, MyApplication.getContext());
+        FileWriterReader.writeFile("distance.tot", "" + totalDistance, MyApplication.getContext());
+        FileWriterReader.writeFile("negscore.tot", "" + totalSpeedNegativeScore, MyApplication.getContext());
     }
 }
