@@ -59,6 +59,5 @@ public class DataEcoAnalysis {
 
         FileWriterReader.writeFile("ecolo.score", score + "", MyApplication.getContext());
         return score;
->>>>>>> 00069949f15171546f0858ef611ddae99fd059ea
     }
 }
