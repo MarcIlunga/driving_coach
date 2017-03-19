@@ -126,6 +126,8 @@ public class MapActivity extends AppCompatActivity {
                 dataHandler.postDelayed(this, dataHandlerDelay);
             }
         }, dataHandlerDelay);
+
+        BleManager blmanager = new BleManager(this);
     }
 
     private void initialize() {
