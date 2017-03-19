@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity
         String distPrint = DataAnalysis.totalDistance + "m";
         ((TextView)findViewById(R.id.DAILY_distance)).setText(distPrint);
 
+        String ecolo = (FileWriterReader.readFile("ecolo.score", MyApplication.getContext()));
+        ((TextView)findViewById(R.id.DAILY_ecology)).setText(ecolo);
     }
 
     void onFabClick (View view) {

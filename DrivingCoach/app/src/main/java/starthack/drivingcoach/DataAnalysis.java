@@ -10,9 +10,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by marius on 18.03.2017.
- */
 
 public class DataAnalysis {
     // Time between 2 calls
@@ -29,12 +26,15 @@ public class DataAnalysis {
     private static final double penalty = 1.0;
     private static List<Double> negativeSpeedDiff = new ArrayList<>();
 
+    public static double currentAverageSpeed = 0;
+
 
     public static void init () {
         readFromFiles();
     }
 
     public static void analyse(double averageSpeed, RoadElement road){
+        currentAverageSpeed = averageSpeed;
 //        Log.d("<<<<<", "average speed: " + averageSpeed);
         if(road != null){
 //            Log.d("<<<<<", "road name: " + road.getRoadName());

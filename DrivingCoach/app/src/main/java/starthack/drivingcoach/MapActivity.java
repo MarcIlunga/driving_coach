@@ -130,6 +130,8 @@ public class MapActivity extends AppCompatActivity {
                 dataHandler.postDelayed(this, dataHandlerDelay);
             }
         }, dataHandlerDelay);
+
+        BleManager blmanager = new BleManager(this);
     }
 
     private void initialize() {
@@ -185,6 +187,8 @@ public class MapActivity extends AppCompatActivity {
     public void refreshPosition(View view) {
         GeoCoordinate pos = positioningManager.getPosition().getCoordinate();
         map.setCenter(pos, Map.Animation.NONE);
+        Toast.makeText(this, "Speed : " + DataAnalysis.currentAverageSpeed, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Distance : " + DataAnalysis.totalDistance, Toast.LENGTH_SHORT).show();
 //        Log.d("<<<<<", pos.toString());
     }
 
