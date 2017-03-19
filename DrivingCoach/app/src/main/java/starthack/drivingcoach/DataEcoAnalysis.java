@@ -53,6 +53,7 @@ public class DataEcoAnalysis {
      */
     public static double calculateEcoScore () {
         double score = 0;
+        Log.d("ECO", res.toString());
         for (Double[] d: res) {
             score += (d[0]*d[0]+d[1]*d[1]+d[2]+d[2]) / (res.size());
         }
