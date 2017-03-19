@@ -1,7 +1,8 @@
 package starthack.drivingcoach;
 
 import android.Manifest;
-import android.app.Activity;
+import android.app.Application;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 import android.os.Handler;
 
@@ -110,6 +112,8 @@ public class MapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
+
         checkPermissions();
 
         //Initialize the data collection handler§
@@ -138,7 +142,7 @@ public class MapActivity extends AppCompatActivity {
         // Search for the map fragment to finish setup by calling init().
         mapFragment = (MapFragment)getFragmentManager().findFragmentById(
                 R.id.mapfragment);
-        Log.d("<<<<<", mapFragment.toString());
+//        Log.d("<<<<<", mapFragment.toString());
         mapFragment.init(new OnEngineInitListener() {
             @Override
             public void onEngineInitializationCompleted(OnEngineInitListener.Error error)
@@ -155,12 +159,24 @@ public class MapActivity extends AppCompatActivity {
                     // Show the indicator of current position
                     map.getPositionIndicator().setVisible(true);
 
+                    if (FileWriterReader.fileExist("last.pos", MyApplication.getContext()) ) {
+                        String data = FileWriterReader.readFile("last.pos", MyApplication.getContext());
+                        Log.d("<<<<<", data);
+                        String geo[] = data.split(",");
 
-//                    map.setCenter(new GeoCoordinate(46, 9.8, 0.0),
-//                            Map.Animation.NONE);
-                    // Set the zoom level to the average between min and max
-                    map.setZoomLevel(
-                            (map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
+                        for (int i = 0; i < geo.length; i++) {
+                            Log.d("<<<<<", geo[i]);
+                        }
+
+                        Log.d("<<<<<", geo[0] + " " + geo[1] + " " + geo[2] + " || " + data);
+
+                        // If we have a last position saved we can center on it
+                        map.setCenter(new GeoCoordinate(Double.parseDouble(geo[0].trim()),Double.parseDouble(geo[1].trim()),
+                                Double.parseDouble(geo[2].trim())), Map.Animation.NONE);
+                        // Set the zoom level to the average between min and max
+                        map.setZoomLevel(
+                                (map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
+                    }
                 } else {
                     Log.d("MapActivity", "ERROR: Cannot initialize Map Fragment");
                 }
@@ -171,6 +187,8 @@ public class MapActivity extends AppCompatActivity {
     public void refreshPosition(View view) {
         GeoCoordinate pos = positioningManager.getPosition().getCoordinate();
         map.setCenter(pos, Map.Animation.NONE);
+        Toast.makeText(this, "Speed : " + DataAnalysis.currentAverageSpeed, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Distance : " + DataAnalysis.totalDistance, Toast.LENGTH_SHORT).show();
 //        Log.d("<<<<<", pos.toString());
     }
 
@@ -180,5 +198,17 @@ public class MapActivity extends AppCompatActivity {
         map = null;
 
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        GeoCoordinate pos = positioningManager.getPosition().getCoordinate();
+        Log.d("<<<<<", "Saved position is : " + pos.toString());
+        FileWriterReader.writeFile("last.pos", pos.getLatitude() + "," + pos.getLongitude() + "," + pos.getAltitude(), MyApplication.getContext());
+//        String read = FileWriterReader.readFile("last.pos", MyApplication.getContext());
+//        Log.d("<<<<<<", "Readed :" + read);
+        DataAnalysis.writeToFile();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

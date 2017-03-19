@@ -1,6 +1,7 @@
 package starthack.drivingcoach;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -8,10 +9,24 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
+
+import com.here.sdk.analytics.internal.HttpClient;
+
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -33,6 +48,17 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        DataAnalysis.init();
+        String toPrint = DataAnalysis.totalScore + "";
+        ((TextView)findViewById(R.id.MAIN_ScoreText)).setText(toPrint);
+
+
+        String distPrint = DataAnalysis.totalDistance + "m";
+        ((TextView)findViewById(R.id.DAILY_distance)).setText(distPrint);
+
+        String ecolo = (FileWriterReader.readFile("ecolo.score", MyApplication.getContext()));
+        ((TextView)findViewById(R.id.DAILY_ecology)).setText(ecolo);
     }
 
     void onFabClick (View view) {
@@ -96,4 +122,61 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    public void login(View view) {
+        final CardView cardView = ((CardView) findViewById(R.id.MAIN_Login));
+        String pseudo = ((TextView)findViewById(R.id.LOGIN_Username)).getText().toString();
+        String mail = ((TextView)findViewById(R.id.LOGIN_Email)).getText().toString();
+        Log.d("<<<<", pseudo + " aaand " + mail);
+        if (isValidData(pseudo, mail)) {
+            Log.d("<<<<", "The slide animation should happen");
+            // TODO: Envoyer à Marc les infos et récupérer l'id pour l'écrire dans un fichier ensuite.
+            AnimationSet s = new AnimationSet(false);
+            Animation slideRight = AnimationUtils.loadAnimation(MyApplication.getContext(), R.anim.slide_right);
+            s.addAnimation(slideRight);
+
+            s.setFillAfter(true);
+            cardView.startAnimation(s);
+
+            cardView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    cardView.setVisibility(View.GONE);
+                }
+            }, 800);
+
+            try {
+                String toSend = pseudo + "|" + mail;
+                byte[] postData = toSend.getBytes();
+                int postDataLength = postData.length;
+                // TODO !!!
+                String request = "http://172.27.3.7";
+
+                URL url = new URL(request);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setInstanceFollowRedirects(false);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("charset", "utf-8");
+                conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+                conn.setUseCaches(false);
+                try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                    wr.write(postData);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Log.d("<<<<<", "Data given is not valid !");
+        }
+
+    }
+
+    private boolean isValidData(String pseudo, String mail) {
+        return (pseudo!= null && !pseudo.equals("")) && (mail!= null && !mail.equals("") && mail.contains("@") && mail.contains("."));
+    }
+
 }
