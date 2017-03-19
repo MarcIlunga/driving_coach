@@ -28,6 +28,9 @@ public class DataAnalysis {
 
     public static double currentAverageSpeed = 0;
 
+    public static double biggestError = 0;
+    public static RoadElement biggestErrorRoad;
+
 
     public static void init () {
         readFromFiles();
@@ -49,6 +52,11 @@ public class DataAnalysis {
             // Correct
             } else {
                 diff = 0;
+            }
+
+            if (biggestError < penalizedFastLimit) {
+                biggestError = penalizedFastLimit;
+                biggestErrorRoad = road;
             }
 
             negativeSpeedDiff.add(diff);
